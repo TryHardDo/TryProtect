@@ -1,13 +1,13 @@
 package eu.playerunion.tryprotect;
 
-import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import eu.playerunion.tryprotect.config.TPMessages;
 import eu.playerunion.tryprotect.protection.TPQuery;
 import eu.playerunion.tryprotect.utils.ProtectionUtils;
 import eu.playerunion.tryprotect.utils.UIUtils;
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
@@ -22,37 +22,44 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class ListenerClass implements Listener {
+public class ListenerClass implements Listener
+{
 
     @EventHandler
-    public void onPlayerJoin(@NotNull final PlayerJoinEvent e) {
+    public void onPlayerJoin(@NotNull final PlayerJoinEvent e)
+    {
         Player joiner = e.getPlayer();
 
-        if (joiner.isOp() || joiner.hasPermission("tprotect.receivejoininfo")) {
+        if (joiner.isOp() || joiner.hasPermission("tprotect.receivejoininfo"))
+        {
             MessageSender.sendPlayerJoinEventMessage(e.getPlayer());
         }
     }
 
-    // Ellenőrzi hogy levédőtáblát ütnek e ki, illetve ha igen van e joga az illetőnek ehhez.
     @EventHandler
-    public void onBlockBreak(@NotNull final BlockBreakEvent e) {
-        if (!(e.getBlock().getState() instanceof Sign)) {
+    public void onBlockBreak(@NotNull final BlockBreakEvent e)
+    {
+        if (!(e.getBlock().getState() instanceof Sign))
+        {
             return;
         }
 
         Sign brokenSign = (Sign) e.getBlock().getState();
 
-        if (!ProtectionUtils.isProtectionSign(brokenSign)) {
+        if (!ProtectionUtils.isProtectionSign(brokenSign))
+        {
             return;
         }
 
         Player breaker = e.getPlayer();
 
         if (breaker.isOp() || breaker.hasPermission("tprotect.breaksign.others") ||
-                ProtectionUtils.isOwnProtection(breaker, brokenSign.getLine(2), brokenSign.getLocation())) {
+                ProtectionUtils.isOwnProtection(breaker, brokenSign.getLine(2), brokenSign.getLocation()))
+        {
 
             String protectionId = brokenSign.getLine(2);
 
@@ -65,20 +72,26 @@ public class ListenerClass implements Listener {
     }
 
     @EventHandler
-    public void onSignGrief(@NotNull final BlockBreakEvent e) {
+    public void onSignGrief(@NotNull final BlockBreakEvent e)
+    {
         Block brokenBlock = e.getBlock();
         List<BlockFace> sniffSides = new ArrayList<>(Arrays.asList(BlockFace.UP, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST));
 
-        for (BlockFace face : sniffSides) {
+        for (BlockFace face : sniffSides)
+        {
             Block relativeBlock = brokenBlock.getRelative(face);
 
-            if (!(brokenBlock.getRelative(face).getBlockData() instanceof Directional)) {
-                if (face.equals(BlockFace.UP)) {
-                    if (!relativeBlock.getType().name().contains("SIGN")) {
+            if (!(brokenBlock.getRelative(face).getBlockData() instanceof Directional))
+            {
+                if (face.equals(BlockFace.UP))
+                {
+                    if (!relativeBlock.getType().name().contains("SIGN"))
+                    {
                         continue;
                     }
 
-                    if (ProtectionUtils.isProtectionSign(((Sign) relativeBlock.getState()))) {
+                    if (ProtectionUtils.isProtectionSign(((Sign) relativeBlock.getState())))
+                    {
                         e.setCancelled(true);
                         return;
                     }
@@ -87,12 +100,15 @@ public class ListenerClass implements Listener {
             }
             Directional directional = ((Directional) relativeBlock.getBlockData());
 
-            if (!relativeBlock.getType().name().contains("SIGN")) {
+            if (!relativeBlock.getType().name().contains("SIGN"))
+            {
                 continue;
             }
 
-            if (directional.getFacing().equals(face)) {
-                if (ProtectionUtils.isProtectionSign(((Sign) relativeBlock.getState()))) {
+            if (directional.getFacing().equals(face))
+            {
+                if (ProtectionUtils.isProtectionSign(((Sign) relativeBlock.getState())))
+                {
 
                     e.setCancelled(true);
                 }
@@ -101,12 +117,15 @@ public class ListenerClass implements Listener {
     }
 
     @EventHandler
-    public void onInteract(@NotNull final PlayerInteractEvent e) {
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock() == null) {
+    public void onInteract(@NotNull final PlayerInteractEvent e)
+    {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.getClickedBlock() == null)
+        {
             return;
         }
 
-        if (!(e.getClickedBlock().getState() instanceof Sign)) {
+        if (!(e.getClickedBlock().getState() instanceof Sign))
+        {
             return;
         }
 
@@ -114,15 +133,17 @@ public class ListenerClass implements Listener {
 
         String[] clickedSignLines = clickedSign.getLines();
 
-        if (!ProtectionUtils.isProtectionSign(clickedSign)) {
+        if (!ProtectionUtils.isProtectionSign(clickedSign))
+        {
             return;
         }
 
-        try {
+        try
+        {
             TPQuery query = new TPQuery(clickedSignLines[2]);
             ProtectedRegion queried = query.getRegion();
 
-            String[] info = new String[] {
+            String[] info = new String[]{
                     "§6#############################################",
                     "§6● §fLevédés: §6§l" + queried.getId(),
                     "§6#############################################",
@@ -135,39 +156,46 @@ public class ListenerClass implements Listener {
             };
 
             e.getPlayer().sendMessage(info);
-        } catch (Exception exception) {
+        } catch (Exception exception)
+        {
             exception.printStackTrace();
         }
     }
 
     @EventHandler
-    public void onSignChange(@NotNull final SignChangeEvent e) {
+    public void onSignChange(@NotNull final SignChangeEvent e)
+    {
         String[] lines = e.getLines();
-        if (lines[0].isEmpty()) {
+        if (lines[0].isEmpty())
+        {
             return;
         }
 
-        if (!lines[0].equalsIgnoreCase("[tprotect]")) {
+        if (!lines[0].equalsIgnoreCase("[tprotect]"))
+        {
             return;
         }
 
         Player changer = e.getPlayer();
 
-        if (!changer.hasPermission("tprotect.create")) {
+        if (!changer.hasPermission("tprotect.create"))
+        {
             changer.sendMessage(TPMessages.NO_PERM_TO_CREATE_ZONE.msg());
             return;
         }
 
         String size = lines[1];
 
-        if (size.isEmpty()) {
+        if (size.isEmpty())
+        {
             changer.sendMessage(TPMessages.MISSING_SIZE.msg());
             return;
         }
 
         String[] splitter = size.split(";");
 
-        if (splitter.length != 3) {
+        if (splitter.length != 3)
+        {
             changer.sendMessage(TPMessages.INVALID_SIZE_FORMAT.msg());
             return;
         }
@@ -176,7 +204,8 @@ public class ListenerClass implements Listener {
         int y = Integer.parseInt(splitter[1]);
         int z = Integer.parseInt(splitter[2]);
 
-        if (x < 10 || y < 10 || z < 2) {
+        if (x < 10 || y < 10 || z < 2)
+        {
             changer.sendMessage(TPMessages.MIN_SIZE_NOT_PROVIDED.msg());
             return;
         }
@@ -185,7 +214,8 @@ public class ListenerClass implements Listener {
         Location protectionSignLocation = e.getBlock().getLocation();
 
         // BETA
-        if (!ProtectionUtils.createProtection(changer, protectionId, protectionSignLocation, x, y, z)) {
+        if (!ProtectionUtils.createProtection(changer, protectionId, protectionSignLocation, x, y, z))
+        {
             changer.sendMessage(TPMessages.PROTECTION_NOT_CREATED.msg());
             return;
         }

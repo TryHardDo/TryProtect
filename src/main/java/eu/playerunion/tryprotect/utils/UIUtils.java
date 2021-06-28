@@ -9,16 +9,21 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.UUID;
 
-public class UIUtils {
-    public static String getFormattedOwnersList(@NotNull final ProtectedRegion region) {
-        if (region.hasMembersOrOwners() && region.getOwners().getUniqueIds().size() > 0) {
+public class UIUtils
+{
+    public static String getFormattedOwnersList(@NotNull final ProtectedRegion region)
+    {
+        if (region.hasMembersOrOwners() && region.getOwners().getUniqueIds().size() > 0)
+        {
             StringBuilder builder = new StringBuilder();
 
             String SEPARATOR = "";
-            for (UUID player : region.getOwners().getUniqueIds()) {
+            for (UUID player : region.getOwners().getUniqueIds())
+            {
                 Player user = Bukkit.getPlayer(player);
 
-                if (user == null) {
+                if (user == null)
+                {
                     continue;
                 }
 
@@ -31,15 +36,19 @@ public class UIUtils {
         return "Nincs tulajdonos!";
     }
 
-    public static String getFormattedMembersList(@NotNull final ProtectedRegion region) {
-        if (region.hasMembersOrOwners() && region.getMembers().getUniqueIds().size() > 0) {
+    public static String getFormattedMembersList(@NotNull final ProtectedRegion region)
+    {
+        if (region.hasMembersOrOwners() && region.getMembers().getUniqueIds().size() > 0)
+        {
             StringBuilder builder = new StringBuilder();
 
             String SEPARATOR = "";
-            for (UUID player : region.getMembers().getUniqueIds()) {
+            for (UUID player : region.getMembers().getUniqueIds())
+            {
                 Player user = Bukkit.getPlayer(player);
 
-                if (user == null) {
+                if (user == null)
+                {
                     continue;
                 }
 
@@ -49,15 +58,18 @@ public class UIUtils {
 
             return builder.toString();
         }
-        return  "Nincsenek tagok!";
+        return "Nincsenek tagok!";
     }
 
-    public static String getFormattedFlagsList(@NotNull final ProtectedRegion region) {
-        if (region.getFlags().size() > 0) {
+    public static String getFormattedFlagsList(@NotNull final ProtectedRegion region)
+    {
+        if (region.getFlags().size() > 0)
+        {
             StringBuilder builder = new StringBuilder();
 
             String SEPARATOR = "";
-            for (Map.Entry<Flag<?>, Object> flag : region.getFlags().entrySet()) {
+            for (Map.Entry<Flag<?>, Object> flag : region.getFlags().entrySet())
+            {
                 builder.append(SEPARATOR).append("§6").append(flag.getKey().getName()).append(": §7§o").append(flag.getValue().toString());
                 SEPARATOR = ", ";
             }

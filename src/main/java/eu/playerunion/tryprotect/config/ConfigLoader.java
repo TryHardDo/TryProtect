@@ -11,24 +11,29 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.logging.Level;
 
-public class ConfigLoader {
+public class ConfigLoader
+{
     private static final File protections = new File(TryProtect.getInstance().getDataFolder(), "protections.json");
 
-    public static String getPrefix() {
+    public static String getPrefix()
+    {
         return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(TryProtect.getInstance().getConfig().getString("prefix")));
     }
 
-    public static void reloadConfig() {
+    public static void reloadConfig()
+    {
         TryProtect.getInstance().reloadConfig();
     }
 
-    public static void saveProtections() {
+    public static void saveProtections()
+    {
         TryProtect.log("Saving protections.yml...", Level.INFO);
         JSONObject clear = new JSONObject();
 
         IOUtils.writeJSONFile(clear, protections);
 
-        if (TryProtect.getProtectionObjectHashMap().size() == 0) {
+        if (TryProtect.getProtectionObjectHashMap().size() == 0)
+        {
             TryProtect.log("Nothing have to save. Skipping...", Level.INFO);
             return;
         }
@@ -40,21 +45,25 @@ public class ConfigLoader {
         TryProtect.log("Saved protections.yml!", Level.INFO);
     }
 
-    public static void loadProtections() {
-        if (TryProtect.getProtectionObjectHashMap().size() > 0) {
+    public static void loadProtections()
+    {
+        if (TryProtect.getProtectionObjectHashMap().size() > 0)
+        {
             TryProtect.log("Protection cache is not empty... Clearing cache.", Level.INFO);
             TryProtect.getProtectionObjectHashMap().clear();
         }
 
         TryProtect.log("Loading protections from disk...", Level.INFO);
 
-        if (protections.length() == 0) {
+        if (protections.length() == 0)
+        {
             IOUtils.writeJSONFile(new JSONObject(), protections);
         }
 
         JSONObject loadedProtections = IOUtils.readJSONFile(protections);
 
-        if (loadedProtections.length() == 0) {
+        if (loadedProtections.length() == 0)
+        {
             TryProtect.log("Protections.json is empty. Skipping loading...", Level.INFO);
             return;
         }
@@ -63,13 +72,16 @@ public class ConfigLoader {
 
         Iterator<String> iter = loadedProtections.keys();
 
-        while (iter.hasNext()) {
+        while (iter.hasNext())
+        {
             String key = iter.next();
 
-            try {
+            try
+            {
                 String value = (String) loadedProtections.get(key);
                 cache.put(key, value);
-            } catch (ClassCastException e) {
+            } catch (ClassCastException e)
+            {
                 TryProtect.log("There was an error while tried to load protections.json", Level.SEVERE);
                 e.printStackTrace();
             }

@@ -8,8 +8,10 @@ import org.bukkit.command.PluginCommand;
 
 import java.io.IOException;
 
-public class BrigadierLoader {
-    public void registerArguments(Commodore commodore, PluginCommand command) throws IOException {
+public class BrigadierLoader
+{
+    public void registerArguments(Commodore commodore, PluginCommand command) throws IOException
+    {
         LiteralCommandNode<?> mainCommand = CommodoreFileFormat.parse(TryProtect.getInstance().getResource("main.commodore"));
         commodore.register(command, mainCommand);
     }

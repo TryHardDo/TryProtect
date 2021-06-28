@@ -5,8 +5,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-public class MessageSender {
-    public static void sendPluginEnableMessage() {
+public class MessageSender
+{
+    public static void sendPluginEnableMessage()
+    {
         PluginDescriptionFile descriptionFile = TryProtect.getInstance().getDescription();
         String[] enableLines = new String[]{
                 ChatColor.DARK_GRAY + "+",
@@ -18,14 +20,16 @@ public class MessageSender {
         Bukkit.getConsoleSender().sendMessage(enableLines);
     }
 
-    public static void sendPluginDisableMessage() {
+    public static void sendPluginDisableMessage()
+    {
         String[] disableLines = new String[]{
                 ChatColor.YELLOW + "Stopping services and schedulers. Good bye! :)"
         };
         Bukkit.getConsoleSender().sendMessage(disableLines);
     }
 
-    public static void sendPlayerJoinEventMessage(Player targetUser) {
+    public static void sendPlayerJoinEventMessage(Player targetUser)
+    {
 
     }
 }
