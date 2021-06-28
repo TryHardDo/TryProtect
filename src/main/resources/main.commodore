@@ -1,0 +1,6 @@
+tryprotect {
+    reload;
+    info;
+    vector;
+    testzone;
+}

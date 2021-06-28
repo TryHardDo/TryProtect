@@ -1,0 +1,20 @@
+name: TryProtect
+version: ${project.version}
+main: eu.playerunion.tryprotect.TryProtect
+api-version: 1.16
+depend: [ WorldGuard ]
+authors: [ TryHardDo, szviktor ]
+description: Worldguard based protection plugin.
+website: htttp://www.playerunion.eu
+commands:
+  tryprotect:
+    description: Main command.
+    aliases: [ tprotect, tprot ]
+    usage: /<command>
+permissions:
+  tprotect.admin:
+    default: op
+    children:
+      tprotect.receivejoininfo: true
+      tprotect.create: true
+      tprotect.breaksign.others: true
