@@ -5,7 +5,7 @@ import eu.playerunion.tryprotect.config.TPMessages;
 import eu.playerunion.tryprotect.protection.TPQuery;
 import eu.playerunion.tryprotect.utils.ProtectionUtils;
 import eu.playerunion.tryprotect.utils.UIUtils;
-import org.bukkit.ChatColor;
+import org.bukkit.EntityEffect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -64,6 +64,8 @@ public class ListenerClass implements Listener
             String protectionId = brokenSign.getLine(2);
 
             ProtectionUtils.removeProtection(breaker, protectionId);
+
+            breaker.playEffect(EntityEffect.TOTEM_RESURRECT);
             return;
         }
 
@@ -184,15 +186,15 @@ public class ListenerClass implements Listener
             return;
         }
 
-        String size = lines[1];
+        String protectionSize = lines[1];
 
-        if (size.isEmpty())
+        if (protectionSize.isEmpty())
         {
             changer.sendMessage(TPMessages.MISSING_SIZE.msg());
             return;
         }
 
-        String[] splitter = size.split(";");
+        String[] splitter = protectionSize.split(";");
 
         if (splitter.length != 3)
         {
@@ -213,7 +215,6 @@ public class ListenerClass implements Listener
         String protectionId = ProtectionUtils.generateProtectionId();
         Location protectionSignLocation = e.getBlock().getLocation();
 
-        // BETA
         if (!ProtectionUtils.createProtection(changer, protectionId, protectionSignLocation, x, y, z))
         {
             changer.sendMessage(TPMessages.PROTECTION_NOT_CREATED.msg());
@@ -222,9 +223,7 @@ public class ListenerClass implements Listener
 
         changer.playSound(changer.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1, 1);
 
-        e.setLine(0, ChatColor.GOLD + "-> [Levédés] <-");
-        e.setLine(1, ChatColor.BOLD + changer.getName());
-        e.setLine(2, protectionId);
-        e.setLine(3, "Katt rám!");
+        // Ha a cast nem jó akkor SignChangeEventre írom át a paramétert
+        ProtectionUtils.formatProtectionSign(e, changer, protectionId);
     }
 }

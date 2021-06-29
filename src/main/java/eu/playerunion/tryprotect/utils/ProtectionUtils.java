@@ -12,18 +12,23 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import eu.playerunion.tryprotect.TryProtect;
 import eu.playerunion.tryprotect.config.TPMessages;
 import eu.playerunion.tryprotect.math.BlockMath;
 import eu.playerunion.tryprotect.protection.TPQuery;
 import org.apache.commons.lang.RandomStringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.SignChangeEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProtectionUtils
 {
@@ -37,6 +42,40 @@ public class ProtectionUtils
         String[] lines = sign.getLines();
         return lines[0].contains("[Levédés]") &&
                 TryProtect.getProtectionObjectHashMap().containsKey(lines[2].replaceAll("&", ""));
+    }
+
+    public static void validateCache(@NotNull final Logger logger)
+    {
+        for (Map.Entry<String, String> cachedProtection : TryProtect.getProtectionObjectHashMap().entrySet())
+        {
+            String pID = cachedProtection.getKey();
+            String wgID = cachedProtection.getValue();
+
+            RegionContainer container = TryProtect.getWorldGuard().getPlatform().getRegionContainer();
+
+            try
+            {
+                boolean valid = false;
+                for (RegionManager manager : container.getLoaded())
+                {
+                    if (manager != null && manager.hasRegion(wgID))
+                    {
+                        valid = true;
+                        break;
+                    }
+                }
+
+                if (!valid)
+                {
+                    logger.warning("Protection " + pID + " is invalid. Removing...");
+                    TryProtect.getProtectionObjectHashMap().remove(pID);
+                }
+            } catch (Exception e)
+            {
+                logger.severe("There was an error while tried to validate " + pID + " protection.");
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void removeProtection(@NotNull final Player breaker, @NotNull final String protectionId)
@@ -90,6 +129,7 @@ public class ProtectionUtils
 
             manager.addRegion(newProtection);
             TryProtect.getProtectionObjectHashMap().put(protectionId, newProtection.getId());
+
             owner.sendMessage(TPMessages.PROTECTION_CREATED.msg());
         }
         return true;
@@ -136,5 +176,13 @@ public class ProtectionUtils
         }
 
         return region.isOwner(worldGuardWrapped);
+    }
+
+    public static void formatProtectionSign(@NotNull final SignChangeEvent s, @NotNull final Player c, @NotNull final String protectionId)
+    {
+        s.setLine(0, ChatColor.GOLD + "-> [Levédés] <-");
+        s.setLine(1, ChatColor.BOLD + c.getName());
+        s.setLine(2, protectionId);
+        s.setLine(3, "Katt rám!");
     }
 }

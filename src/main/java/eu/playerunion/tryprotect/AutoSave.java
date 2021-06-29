@@ -1,8 +1,8 @@
 package eu.playerunion.tryprotect;
 
 import eu.playerunion.tryprotect.config.ConfigLoader;
+import eu.playerunion.tryprotect.utils.ProtectionUtils;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AutoSave implements Runnable
@@ -12,13 +12,14 @@ public class AutoSave implements Runnable
     @Override
     public void run()
     {
-        this.log("Auto saving configurations and protections.");
-        ConfigLoader.saveProtections();
-        this.log("Save completed!");
-    }
+        this.autoSaveLogger.info("Saving and validating protections.");
 
-    private void log(String message)
-    {
-        this.autoSaveLogger.log(Level.INFO, message);
+        if (ConfigLoader.validateBeforeSave())
+        {
+            ProtectionUtils.validateCache(autoSaveLogger);
+        }
+
+        ConfigLoader.saveProtections();
+        this.autoSaveLogger.info("Validation completed! Everything is saved...");
     }
 }

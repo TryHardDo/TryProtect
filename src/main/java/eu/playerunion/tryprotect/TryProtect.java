@@ -78,7 +78,11 @@ public final class TryProtect extends JavaPlugin
         TPMessages.loadMessages();
 
         Bukkit.getPluginManager().registerEvents(new ListenerClass(), this);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new AutoSave(), 20 * 60 * 5, 20 * 60 * 5);
+
+        if (ConfigLoader.doesAutoSaveEnabled())
+        {
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this, new AutoSave(), ConfigLoader.getAutoSaveInterval() * 20L, ConfigLoader.getAutoSaveInterval() * 20L);
+        }
 
         if (CommodoreProvider.isSupported())
         {

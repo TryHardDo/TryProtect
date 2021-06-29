@@ -20,6 +20,21 @@ public class ConfigLoader
         return ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(TryProtect.getInstance().getConfig().getString("prefix")));
     }
 
+    public static boolean doesAutoSaveEnabled()
+    {
+        return TryProtect.getInstance().getConfig().getBoolean("auto_save.enabled", true);
+    }
+
+    public static int getAutoSaveInterval()
+    {
+        return TryProtect.getInstance().getConfig().getInt("auto_save.interval", 300);
+    }
+
+    public static boolean validateBeforeSave()
+    {
+        return TryProtect.getInstance().getConfig().getBoolean("auto_save.validate_before_save", true);
+    }
+
     public static void reloadConfig()
     {
         TryProtect.getInstance().reloadConfig();

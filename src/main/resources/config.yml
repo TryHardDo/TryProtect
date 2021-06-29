@@ -1,1 +1,5 @@
 prefix: "&b&lTry&oProtect &f> "
+auto_save:
+  enabled: true
+  interval: 300
+  validate_before_save: true
